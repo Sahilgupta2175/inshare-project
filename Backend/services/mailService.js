@@ -26,7 +26,7 @@ const sendMail = async ({sender, receiver, subject, text, html}) => {
         return { success: true, messageId: info.messageId };
     } catch (error) {
         console.error("Email sending failed:", error);
-        throw error; // Re-throw to be caught by the route handler
+        throw error;
     }
 }
 
