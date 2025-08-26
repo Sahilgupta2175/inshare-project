@@ -4,6 +4,19 @@
     --container-width: 500px;
 }
 
+.logo {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    z-index: 1000;
+}
+
+.logo img {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+}
+
 body, html {
     font-family: system-ui;
     background: var(--main-bg-color);
@@ -11,6 +24,7 @@ body, html {
     padding: 0;
     margin: 0;
     overflow: hidden;
+    position: relative;
 }
 
 body, .drop-zone, .upload-container {
