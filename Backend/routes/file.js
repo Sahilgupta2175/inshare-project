@@ -42,34 +42,60 @@ router.post('/', (req, res) => {
         });
 
         const response = await file.save();
+        
+        // Response -> Link
         res.json({ file: `${process.env.APP_BASE_URL}/files/${response.uuid}` });
     })
-
-    // Response -> Link
 });
 
 router.post('/send', async (req, res) => {
-    const {uuid, recevier, sender} = req.body;
+    console.log(req.body);
+    const {uuid, receiver, sender} = req.body;
 
     // Validate request
-    if(!uuid || !recevier || !sender) {
+    if(!uuid || !receiver || !sender) {
         return res.status(422).send({ error: 'All fields are required.'});
     }
 
     // Get data from database
-    const file = await File.findOne({ uuid: uuid });
+    try {
+        const file = await File.findOne({ uuid: uuid });
+
+        if(!file) {
+            return res.status(404).send({ error: 'File not found.' });
+        }
     
-    if(file.sender) {
-      return res.status(422).send({ error: 'Email already sent once.'});
+        if(file.sender) {
+            return res.status(422).send({ error: 'Email already sent once.'});
+        }
+
+        file.sender = sender;
+        file.receiver = receiver;
+        const response = await file.save();
+
+        console.log('Sending email from:', sender, 'to:', receiver);
+
+        // Send mail
+        const sendMail = require('../services/mailService.js');
+        sendMail({
+            sender,
+            receiver,
+            subject: `InShare File sharing`,
+            text: `${sender} shared a file with you`,
+            html: require('../services/emailTemplate')({
+                sender, 
+                size: parseInt(file.size/1000) + ' KB',
+                downloadLink: `${process.env.APP_BASE_URL}/files/${file.uuid}?source=email` ,
+                expires: '24 hours'
+            })
+        }).then(() => {
+            return res.json({success: true});
+        }).catch(err => {
+            return res.status(500).json({error: 'Error in email sending.'});
+        });
+    }catch(err) {
+        return res.status(500).send({ error: 'Something went wrong.'});
     }
-
-    file.sender = sender;
-    file.receiver = recevier;
-    const response = await file.save();
-
-    // Send mail
-    const sendMail = require('../services/mailService.js');
-
 })
 
 
