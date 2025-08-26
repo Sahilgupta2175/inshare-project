@@ -106,13 +106,13 @@ Create a `.env` file in the Backend directory with the following variables:
 
 ```env
 # Server Configuration
-PORT=9090
+PORT=8080
 
 # Database
 ATLAS_MONGO_URL=mongodb+srv://username:password@cluster.mongodb.net/inshare
 
 # Application URL
-APP_BASE_URL=http://localhost:9090
+APP_BASE_URL=http://localhost:8080
 
 # Email Configuration (Gmail)
 EMAIL_USER=your-email@gmail.com
