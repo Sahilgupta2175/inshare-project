@@ -1,72 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InShare - File Sharing Made Easy</title>
+    <title>InShare Application - Easy file Sharing</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-    <img src="./images/logo.png" alt="Inshare logo" class="logo">
     <section class="upload-container">
-        <form action="">
-            <div class="drop-zone">
-                <div class="icon-container">
-                    <img src="./images/file.svg" draggable="false" class="center" alt="File Icon">
-                    <img src="./images/file.svg" draggable="false" class="left" alt="File Icon">
-                    <img src="./images/file.svg" draggable="false" class="right" alt="File Icon">
-                </div>
-                <input type="file" id="fileInput">
-                <div class="title">Drop your Files here or, <span id="browseBtn">browse</span></div>
+        <div class="drop-zone">
+            <div class="icon-container">
+                <img src="./images/file.svg" alt="File icon" class="center" draggable="false">
+                <img src="./images/file.svg" alt="File icon" class="right" draggable="false">
+                <img src="./images/file.svg" alt="File icon" class="left" draggable="false">
             </div>
-        </form>
+            <label for="file-input" class="visually-hidden"></label>
+            <input type="file" id="file-input" title="Upload your file">
+            <div class="title">Drop your Files here or <span class="browse-btn">Browse</span></div>
+        </div>
         <div class="progress-container">
             <div class="bg-progress"></div>
-
             <div class="inner-container">
-                <div class="status">Uploading...</div>
-                <div class="percent-container">
-                    <span class="percentage" id="progressPercent">0</span>%
-                </div>
+                <div class="title">Uploading...</div>
+                <div class="percent-container"><span id="percent">0</span>%</div>
                 <div class="progress-bar"></div>
             </div>
-
         </div>
         <div class="sharing-container">
-            <p class="expire">Link expires in 24 hrs</p>
-
-
+            <p class="expire">Link expires in 24 Hrs</p>
             <div class="input-container">
                 <input type="text" id="fileURL" readonly>
-                <img src="./images/copy-icon.svg" id="copyURLBtn" alt="copy to clipboard icon">
+                <img src="./images/copy.svg" alt="Copy Logo" id="copy-btn">
             </div>
-
-
-            <p class="email-info">Or Send via Email</p>
+            <p>Or send Via Email</p>
             <div class="email-container">
-                <form id="emailForm">
-                    <div class="filed">
-                        <label for="fromEmail">Your email</label>
-                        <input type="email" autocomplete="email" required name="from-email" id="fromEmail">
+                <form id="email-form">
+                    <div class="field">
+                        <label for="sender">Your email</label>
+                        <input type="email" required name="from-email" id="sender">
                     </div>
-
-                    <div class="filed">
-                        <label for="toEmail">Receiver's email</label>
-                        <input type="email" required autocomplete="receiver" name="to-email" id="toEmail">
+                    <div class="field">
+                        <label for="receiver">Receiver's email</label>
+                        <input type="email" required name="to-email" id="receiver">
                     </div>
-                    <div class="send-btn-container">
-                        <button type="submit">Send</button>
-                    </div>
+                    <button type="submit">Send</button>
                 </form>
             </div>
         </div>
     </section>
-    <div class="image-vector"></div>
-    <div class="toast">Sample message</div>
+    <div class="upload-vector"></div>
+    <div class="toast">Copy to Clipboard</div>
     <script src="index.js"></script>
 </body>
-
 </html>
