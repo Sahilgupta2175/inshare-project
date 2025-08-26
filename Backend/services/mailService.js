@@ -10,16 +10,23 @@ const transporter = nodemailer.createTransport({
 
 const sendMail = async ({sender, receiver, subject, text, html}) => {
     try {
+        console.log('Attempting to send email from:', sender, 'to:', receiver);
+        console.log('Email config:', {
+            user: process.env.EMAIL_USER,
+            passExists: !!process.env.EMAIL_PASS
+        });
+        
         const info = await transporter.sendMail({
-            from: `inShare <${sender}>`, 
             to: receiver, 
             subject: subject, 
             text: text, 
             html: html, 
         });
-        console.log("Message sent: %s", info.messageId);
+        console.log("Email sent successfully. Message ID:", info.messageId);
+        return { success: true, messageId: info.messageId };
     } catch (error) {
-        console.error("Error sending email:", error.message);
+        console.error("Email sending failed:", error);
+        throw error; // Re-throw to be caught by the route handler
     }
 }
 

@@ -72,22 +72,25 @@ router.post('/send', async (req, res) => {
 
         // Send mail
         const sendMail = require('../services/mailService.js');
-        sendMail({
-            sender,
-            receiver,
-            subject: `InShare File sharing`,
-            text: `${sender} shared a file with you`,
-            html: require('../services/emailTemplate')({
-                sender, 
-                size: parseInt(file.size/1000) + ' KB',
-                downloadLink: `${process.env.APP_BASE_URL}/files/${file.uuid}?source=email` ,
-                expires: '24 hours'
-            })
-        }).then(() => {
+        try {
+            const emailResult = await sendMail({
+                sender,
+                receiver,
+                subject: `InShare File sharing`,
+                text: `${sender} shared a file with you`,
+                html: require('../services/emailTemplate')({
+                    sender, 
+                    size: parseInt(file.size/1000) + ' KB',
+                    downloadLink: `${process.env.APP_BASE_URL}/files/${file.uuid}?source=email` ,
+                    expires: '24 hours'
+                })
+            });
+            console.log('Email sent successfully:', emailResult);
             return res.json({success: true});
-        }).catch(err => {
-            return res.status(500).json({error: 'Error in email sending.'});
-        });
+        } catch (emailError) {
+            console.error('Email sending failed:', emailError);
+            return res.status(500).json({error: 'Error in email sending: ' + emailError.message});
+        }
     }catch(err) {
         return res.status(500).send({ error: 'Something went wrong.'});
     }
