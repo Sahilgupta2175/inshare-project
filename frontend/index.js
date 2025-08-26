@@ -76,18 +76,9 @@ const uploadFile = () => {
     formData.append("myfile", file);
 
     const xhr = new XMLHttpRequest();
-    // xhr.onreadystatechange = () => {
-    //     if (xhr.readyState === XMLHttpRequest.DONE) {
-    //         console.log(xhr.response);
-    //         onUploadSuccess(JSON.parse(xhr.response));
-    //     }
-    // };
 
     xhr.onreadystatechange = () => {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-            console.log('Response status:', xhr.status);
-            console.log('Response text:', xhr.responseText);
-            
+        if (xhr.readyState === XMLHttpRequest.DONE) {     
             try {
                 const response = JSON.parse(xhr.responseText);
                 if (response.error) {
