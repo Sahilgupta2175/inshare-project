@@ -10,7 +10,7 @@ let storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, 'uploads/'),
     filename: function(req, file, cb) {
         const name = path.parse(file.originalname).name;
-        const uniqueName = `${name}-${Date.now()}${path.extname(file.originalname)}`;
+        const uniqueName = `${name}${path.extname(file.originalname)}`;
         cb(null, uniqueName);
     }
 });
@@ -47,6 +47,30 @@ router.post('/', (req, res) => {
 
     // Response -> Link
 });
+
+router.post('/send', async (req, res) => {
+    const {uuid, recevier, sender} = req.body;
+
+    // Validate request
+    if(!uuid || !recevier || !sender) {
+        return res.status(422).send({ error: 'All fields are required.'});
+    }
+
+    // Get data from database
+    const file = await File.findOne({ uuid: uuid });
+    
+    if(file.sender) {
+      return res.status(422).send({ error: 'Email already sent once.'});
+    }
+
+    file.sender = sender;
+    file.receiver = recevier;
+    const response = await file.save();
+
+    // Send mail
+    const sendMail = require('../services/mailService.js');
+
+})
 
 
 module.exports = router;
