@@ -5,15 +5,8 @@ const path = require('path');
 const File = require('../models/file');
 const {v4: uuidv4} = require('uuid');
 
-// Set storage engine
-let storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, 'uploads/'),
-    filename: function(req, file, cb) {
-        const name = path.parse(file.originalname).name;
-        const uniqueName = `${name}${path.extname(file.originalname)}`;
-        cb(null, uniqueName);
-    }
-});
+// Set storage engine - using memory storage for Vercel compatibility
+let storage = multer.memoryStorage();
 
 // Initialize upload
 const upload = multer({
@@ -22,22 +15,28 @@ const upload = multer({
 }).single('myfile');
 
 router.post('/', (req, res) => {
+    console.log('Upload request received');
     // Store file
     upload(req, res, async (err) => {
+        console.log('Multer processed request');
+        console.log('req.file:', req.file);
+        console.log('req.body:', req.body);
+        console.log('err:', err);
+        console.log('Headers:', req.headers);
         // validate request
-        if(!req.file) {
-            return res.json({error: 'All files are required.'});
-        }
-
         if(err) {
             return res.status(500).send({error: err.message});
         }
 
+        if(!req.file) {
+            return res.json({error: 'All files are required.'});
+        }
+
         // Store into database
         const file = new File({
-            filename: req.file.filename,
+            filename: req.file.originalname,
             uuid: uuidv4(),
-            path: req.file.path,
+            path: req.file.originalname, // For memory storage, we'll store the original filename
             size: req.file.size
         });
 
