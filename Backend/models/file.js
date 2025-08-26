@@ -25,6 +25,14 @@ const fileSchema = new Schema({
     receiver: { 
         type: String, 
         required: false 
+    },
+    data: {
+        type: Buffer,
+        required: false
+    },
+    mimetype: {
+        type: String,
+        required: false
     }
 }, {timestamps : true});
 

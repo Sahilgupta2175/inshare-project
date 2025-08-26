@@ -26,12 +26,14 @@ router.post('/', (req, res) => {
             return res.json({error: 'All files are required.'});
         }
 
-        // Store into database
+        // Store into database with file data
         const file = new File({
             filename: req.file.originalname,
             uuid: uuidv4(),
-            path: req.file.originalname, // Store original filename for memory storage
-            size: req.file.size
+            path: req.file.originalname, 
+            size: req.file.size,
+            data: req.file.buffer, 
+            mimetype: req.file.mimetype 
         });
 
         const response = await file.save();

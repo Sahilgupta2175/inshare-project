@@ -11,11 +11,20 @@ router.get('/:uuid', async (req, res) => {
             return res.render('download', { error: 'Link has been expired.'});
         }
 
-        // For Vercel deployment with memory storage, files don't persist
-        // Show download page with file info but explain limitation
-        return res.render('download', { 
-            error: 'File upload successful but download not available in this demo version. Files don\'t persist in serverless environment.' 
-        });
+        // If file has data stored in database, serve it for download
+        if (file.data) {
+            res.set({
+                'Content-Type': file.mimetype || 'application/octet-stream',
+                'Content-Disposition': `attachment; filename="${file.filename}"`,
+                'Content-Length': file.size
+            });
+            return res.send(file.data);
+        } else {
+            // Fallback if no data is stored
+            return res.render('download', { 
+                error: 'File data not available.' 
+            });
+        }
     } catch(err) {
         return res.render('download', { error: 'Something went wrong.'});
     }
