@@ -5,16 +5,8 @@ const path = require('path');
 const File = require('../models/file');
 const {v4: uuidv4} = require('uuid');
 
-// Set storage engine
-let storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, 'uploads/'),
-    filename: function(req, file, cb) {
-        const customName = req.body.fileName || file.originalname;
-        const name = path.parse(customName).name;
-        const uniqueName = `${Date.now()}-${name}${path.extname(file.originalname)}`;
-        cb(null, uniqueName);
-    }
-});
+// Set storage engine - Memory storage for Vercel compatibility
+let storage = multer.memoryStorage();
 
 // Initialize upload
 const upload = multer({
@@ -36,9 +28,9 @@ router.post('/', (req, res) => {
 
         // Store into database
         const file = new File({
-            filename: req.file.filename,
+            filename: req.file.originalname,
             uuid: uuidv4(),
-            path: req.file.path,
+            path: req.file.originalname, // Store original filename for memory storage
             size: req.file.size
         });
 

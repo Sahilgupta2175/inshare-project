@@ -11,17 +11,11 @@ router.get('/:uuid', async (req, res) => {
             return res.render('download', { error: 'Link has been expired.'});
         }
 
-        const filePath = `${__dirname}/../${file.path}`;
-        
-        // Check if file exists (for development)
-        if (fs.existsSync(filePath)) {
-            res.download(filePath);
-        } else {
-            // For Vercel deployment where files don't persist
-            return res.render('download', { 
-                error: 'File not available for download. This is a demo version.' 
-            });
-        }
+        // For Vercel deployment with memory storage, files don't persist
+        // Show download page with file info but explain limitation
+        return res.render('download', { 
+            error: 'File upload successful but download not available in this demo version. Files don\'t persist in serverless environment.' 
+        });
     } catch(err) {
         return res.render('download', { error: 'Something went wrong.'});
     }
